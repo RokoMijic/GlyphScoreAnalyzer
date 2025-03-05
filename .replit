@@ -1,0 +1,51 @@
+modules = ["python-3.11"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Unicode Analyzer"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Unicode Range Test"
+
+[[workflows.workflow]]
+name = "Unicode Analyzer"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python unicode_analyzer.py analyze 'Hello World! 👋' --detailed"
+
+[[workflows.workflow]]
+name = "Unicode Range Test"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "python unicode_analyzer.py analyze-range 0x2190 0x2195"
+
+[deployment]
+run = ["sh", "-c", "python unicode_analyzer.py analyze 'Hello World! 👋' --detailed"]
